@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+
+  <test thread-count="5" name="Navegando Servicio">
+    <classes>
+      <class name="Ejerecicio.Uno.puntoUnoTest"/> 
+    </classes>
+  </test> <!-- Test -->
+     
+      <test name="Creando cuentas">
+      <classes>
+      <class name="Ejerecicio.Uno.PuntoDosTest"/>
+      </classes>
+		</test>
+		
+		 <test name="Modificando cuentas">
+      <classes>
+      <class name="Ejerecicio.Uno.PuntoTresTest"/>
+      </classes>
+		</test>
+  
+</suite> <!-- Suite -->
