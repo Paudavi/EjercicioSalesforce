@@ -11,16 +11,12 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class Base {
 	
-	public WebDriver driver;
+	private WebDriver driver;
 	public Properties prop;
 	
 	public WebDriver initializeDriver() throws IOException {
-		prop = new Properties();
-		FileInputStream fis = new FileInputStream(System.getProperty("user.dir")+"\\src\\main\\java\\resources\\data.properties");
-		prop.load(fis);
-		//String exe = "user.home" + "\\src\\main\\java\\resources\\chromedriver.exe";
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\59892\\Downloads\\chromedriver.exe");
-		//System.setProperty("webdriver.chrome.driver",  "user.home" + "\\src\\main\\java\\resources\\chromedriver.exe");
+		properties();
+		System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + "\\src\\main\\java\\resources\\chromedriver.exe");
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-notifications");
 		driver = new ChromeDriver(options);
@@ -29,6 +25,13 @@ public class Base {
 		return driver;
 	
 	}
+	public Properties properties() throws IOException {
+		prop = new Properties();
+		FileInputStream fis = new FileInputStream(System.getProperty("user.dir")+"\\src\\main\\java\\resources\\data.properties");
+		prop.load(fis);
+		return prop;
+	}
+	
 	
 	
 }

@@ -6,7 +6,7 @@
       <class name="Ejerecicio.Uno.PuntoTresTest">
         <methods>
           <include name="Quit"/>
-          <include name="Entrar"/>
+          <include name="Entrar" invocation-numbers="0"/>
           <include name="initalize"/>
         </methods>
       </class> <!-- Ejerecicio.Uno.PuntoTresTest -->

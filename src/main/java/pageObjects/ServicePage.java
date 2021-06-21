@@ -1,5 +1,6 @@
 package pageObjects;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -8,24 +9,29 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import resources.Base;
+import resources.Utilities;
 
-public class ServicePage {
+public class ServicePage extends Base{
 
-	WebDriver driver;
+	private WebDriver driver;
+	private Utilities ut;
+	
 	public ServicePage(WebDriver driver) {
 		this.driver = driver;
-		PageFactory.initElements(driver, this);		
+		PageFactory.initElements(driver, this);
+		ut =  new Utilities(driver);
 	}
 	
 
 	@FindBy(xpath="//a[@title='Nuevo']")
 	private WebElement nuevoCuentas;
-	@FindBy(how = How.XPATH, using="//div/one-appnav/div/one-app-nav-bar/nav/div/one-app-nav-bar-item-root[@data-id='Account']")
-	private WebElement Cuentas;
-	@FindBy (xpath="//a[@title='Cuenta2']")
-	private WebElement cuenta2;
+	
+	private void ingresarCuenta(String nameCuenta) {
+		String strMyXPath = "//a[@title='" + nameCuenta + "']";
+		driver.findElement(By.xpath(strMyXPath)).click();
+		}
+	
 	@FindBy (xpath="//button[@name='Global.NewContact']")
 	private WebElement nuevocontacto;
 	@FindBy(how = How.XPATH, using="//div/one-appnav/div/one-app-nav-bar/nav/div/one-app-nav-bar-item-root")
@@ -52,24 +58,11 @@ public class ServicePage {
 	private WebElement cancelButton;
 	@FindBy (xpath="//div[@class='inlineFooter']/div/div/div[3]/button")
 	private WebElement cancel1;
-	public static final String xpathTab1="//div/one-appnav/div/one-app-nav-bar/nav/div/one-app-nav-bar-item-root/a[@title='%s']";
 	
 	
 	public WebElement cancel1() {
 		return cancel1;
 	}
-	
-	public WebElement methodChatter() {
-	      String newUser = "Chatter";
-	      String fullXpath = String.format(xpathTab1, newUser);
-	     return driver.findElement(By.xpath(fullXpath));
-	    }
-	
-	public WebElement methodAccount() {
-	      String newUser = "Account";
-	      String fullXpath = String.format(xpathTab1, newUser);
-	     return driver.findElement(By.xpath(fullXpath));
-	    }
 	
 	public WebElement cancelButton() {
 		return cancelButton;
@@ -82,10 +75,7 @@ public class ServicePage {
 	}
 	
 	
-	public WebElement Wait(WebElement a) {
-		WebDriverWait w= new WebDriverWait(driver,5);
-		return w.until(ExpectedConditions.visibilityOf(a));
-	}
+	
 	public WebElement nuevoPanel() {
 		return nuevoPanel;
 	}
@@ -114,15 +104,6 @@ public class ServicePage {
 		return nuevocontacto;
 	}
 	
-	public WebElement cuenta2() {
-		return cuenta2;	
-	}
-	
-	
-	public WebElement cuentas() {
-		return Cuentas;
-	}
-	
 	public WebElement nuevoCuentas() {
 		return nuevoCuentas;
 	}
@@ -139,15 +120,14 @@ public class ServicePage {
 	}
 	
 	public void nuevoYcierro() throws InterruptedException {
-		waitURL();
 		nuevo().click();
-		Wait(cancel());
+		ut.waitWebElement(cancel(), 7);
 		cancel().click();
 	}
 	public void nuevoYcancelo() throws InterruptedException {
-		waitURL();		
+		ut.waitURL("Recent", 7);
 		nuevoCuentas().click();
-		Wait(cancelar());
+		ut.waitWebElement(cancelar(), 7);
 		cancelar().click();
 	}
 	
@@ -165,20 +145,15 @@ public class ServicePage {
 	
 	public void nuevoYcanceloInforme() throws InterruptedException {
 		nuevoInforme().click();
-		WebDriverWait w= new WebDriverWait(driver,5);
-		w.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(informeFrame()));
-		
+		ut.waitAndSwitchFrame(informeFrame(), 7);
 		textCancelar().click();
 		switchBack();
 			}
 	
 	public void nuevoYcanceloPanel() throws InterruptedException {
 		
-		nuevoPanel().click();
-		WebDriverWait w= new WebDriverWait(driver,5);
-
-		w.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(panelesFrame()));
-	
+		nuevoPanel().click();		
+		ut.waitAndSwitchFrame(panelesFrame(), 7);
 		cancelButton().click();
 		switchBack();
 
@@ -191,18 +166,15 @@ public class ServicePage {
 		driver.quit();
 	}
 	
-	public NuevoContaco LoginNuevoContacto() {
-		cuentas().click();
-		cuenta2().click();
+	public NuevoContaco LoginNuevoContacto() throws IOException {
+		navegaVentanas(2);
+		properties();
+		ingresarCuenta(prop.getProperty("2Cuenta"));
 		nuevoContacto().click();
 		NuevoContaco nc = new NuevoContaco(driver);
 		return nc;
 		
 	}
 	
-	public  void waitURL() {
-	WebDriverWait w= new WebDriverWait(driver,5);
-	w.until(ExpectedConditions.urlContains("Recent"));
-	}
 	
 }

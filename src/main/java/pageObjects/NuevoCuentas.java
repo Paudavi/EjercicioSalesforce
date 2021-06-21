@@ -1,26 +1,28 @@
 package pageObjects;
 
+import java.util.List;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.asserts.SoftAssert;
 
 import resources.Base;
+import resources.Utilities;
 
 public class NuevoCuentas extends Base {
 
 	WebDriver driver;
-    JavascriptExecutor executor;
+    
     WebDriverWait w;
+    Utilities ut;
 	public NuevoCuentas(WebDriver driver) {
 		this.driver = driver;
-        this.executor = (JavascriptExecutor) this.driver;
-		PageFactory.initElements(driver, this);		
+		PageFactory.initElements(driver, this);	
+		ut =  new Utilities(driver);
 	}
 	
 	@FindBy(xpath="//a[@title='Nuevo']")
@@ -35,6 +37,11 @@ public class NuevoCuentas extends Base {
 	private void Campos(String type) {
 		String strMyXPath = "//label[text()='" + type + "']/following-sibling::div/lightning-base-combobox/div";
 		driver.findElement(By.xpath(strMyXPath)).click();
+		}
+	private  WebElement CamposElement(String type) {
+		String strMyXPath = "//label[text()='" + type + "']/following-sibling::div/lightning-base-combobox/div";
+		 WebElement element = driver.findElement(By.xpath(strMyXPath));
+		 return element;
 		}
 		
 	private void valoracion(String type) {
@@ -53,6 +60,15 @@ public class NuevoCuentas extends Base {
 	
 	@FindBy (xpath="//td[@aria-current='date']")
 	private WebElement currentDate;
+	
+	@FindBy (xpath="//h2[starts-with(@id,'month')]")
+	private WebElement month;
+	
+	@FindBy (xpath="//h2[starts-with(@id,'month')]/following::button[1]")
+	private WebElement nextMonth;
+	
+	@FindBy (xpath="//span[@class='slds-day']")
+	private List<WebElement> days;
 	
 	@FindBy (xpath="//button[@name='SaveAndNew']")
 	private WebElement SaveAndNew;
@@ -77,8 +93,18 @@ public class NuevoCuentas extends Base {
 		return nombre;
 	}
 	
+	public WebElement month() {
+		return month;
+	}
+	
+	public WebElement nextMonth() {
+		return nextMonth;
+	}
 
-
+	public List<WebElement> days(){
+		return days;
+	}
+	
 	 public WebElement date() {
 		 return date;
 	 }
@@ -109,21 +135,21 @@ public class NuevoCuentas extends Base {
 	 
 	public void creandoCuenta(String name, String valoracion, String customer, 
 			String propiedad, String sector, String priority, String SLA, String opp,
-			String bin) {
-		w= new WebDriverWait(driver,7);
-		w.until(ExpectedConditions.visibilityOf(nombre()));
+			String bin, String wantedMonth, String wantedDay) {
+	
+		ut.waitWebElement(nombre(), 7);
 		nombre().sendKeys(name);
 		Campos("Valoración");
 		valoracion(valoracion);
-		JavascriptExecutor js= (JavascriptExecutor)driver;
-		js.executeScript("document.querySelector('.actionBody').scrollTop=200");
+		ut.scrollTop("250");
 		Campos("Tipo");
 		valoracion(customer);
 		Campos("Propiedad");
 		valoracion(propiedad);
+		ut.waitWebElementClickable(CamposElement("Sector"),7);
 		Campos("Sector");
 		valoracion(sector);
-		js.executeScript("document.querySelector('.actionBody').scroll(0,900)");
+		ut.scroll("900");
 		Campos("Customer Priority");
 		valoracion(priority);
 		Campos("SLA");
@@ -133,19 +159,20 @@ public class NuevoCuentas extends Base {
 		Campos("Active");
 		eleccActive(bin);
 		date().click();
-		currentDate().click();
+		//currentDate().click();
+		ut.chooseDate(month, wantedMonth, nextMonth, days, wantedDay);
 		SaveAndNew().click();
-		w.until(ExpectedConditions.visibilityOf(success()));
+		ut.waitWebElement(success(), 7);
 		cierre().click();
 	}
 	
 	public void creandoFlasaCuenta() throws InterruptedException {
-		w= new WebDriverWait(driver,7);
-		w.until(ExpectedConditions.visibilityOf(nombre()));
+	
+		ut.waitWebElement(nombre(), 7);
 		saveEdit().click();
-		w.until(ExpectedConditions.visibilityOf(error()));
+		ut.waitWebElement(error(), 7);
 		SoftAssert a = new SoftAssert();
-		String mensajeError = error().getText();
+		String mensajeError =  error().getText();
 		a.assertTrue(mensajeError.contains("problema"));
 		a.assertAll();
 

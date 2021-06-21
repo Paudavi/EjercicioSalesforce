@@ -3,42 +3,60 @@ package Ejerecicio.Uno;
 import java.io.IOException;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import pageObjects.NuevoCuentas;
 import pageObjects.ServicePage;
 import pageObjects.signInPage;
 import resources.Base;
+import resources.ExcelDataProvider;
+import resources.Utilities;
 
 public class PuntoDosTest extends Base {
 
-	public WebDriver driver;
-	public ServicePage sp;	
-		
-	@BeforeTest 
+	private WebDriver driver;
+	@BeforeMethod 
 		public void initalize() throws IOException {
 			driver = initializeDriver();
+			new Utilities(driver);
+		
 		}
 		
-		@Test
-		public void Entrar() throws IOException, InterruptedException {
+		@Test (dataProvider = "data")
+		public void Entrar(String NameAccount, String Valoracion, String Customer, String Propiedad, String Sector, String Priority, String SLA, String opp,
+			String Bin, String wantedMonth, String wantedDay) throws IOException, InterruptedException {
 			signInPage sg = new signInPage(driver);
 			ServicePage sp = sg.LoginServicePage();
 			sp.navegaVentanas(2);
 			NuevoCuentas c = new NuevoCuentas (driver);
 			c.nuevoCuentas().click();
-			c.creandoCuenta(prop.getProperty("1Cuenta"), "Hot","Prospect", "Public", "Banking", "Low", "Silver", "No", "No");
-			WebDriverWait w= new WebDriverWait(driver,7);
-			w.until(ExpectedConditions.urlContains("count=2"));
-			c.creandoCuenta(prop.getProperty("2Cuenta"), "Cold", "Customer - Channel", "Subsidiary", "Chemicals", "High", "Bronze", "Yes", "No");
-			c.creandoFlasaCuenta();
+			c.creandoCuenta(NameAccount, Valoracion, Customer, Propiedad, Sector, Priority, SLA, 
+					opp, Bin, wantedMonth, wantedDay);
 }
+	@Test
+	public void flaseAccount() throws IOException, InterruptedException {
+		signInPage sg = new signInPage(driver);
+		ServicePage sp = sg.LoginServicePage();
+		sp.navegaVentanas(2);
+		NuevoCuentas c = new NuevoCuentas (driver);
+		c.nuevoCuentas().click();
+		c.creandoFlasaCuenta();
+	}
 		
-		@AfterTest
+		
+	@DataProvider (name = "data")
+	public Object[][] getData() throws IOException {
+		String path= System.getProperty("user.dir")+"\\src\\main\\java\\resources\\data.xlsx";		
+		ExcelDataProvider excel = new ExcelDataProvider();
+		Object data[][] = excel.testData(path, "Accounts");
+		return data;		
+	}
+		
+		
+		@AfterMethod
 		public void Quit() {
 			driver.quit();
 		}

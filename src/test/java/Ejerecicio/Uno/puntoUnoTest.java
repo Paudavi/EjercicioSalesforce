@@ -13,8 +13,8 @@ import resources.Base;
 
 public class puntoUnoTest extends Base {
 	
-public WebDriver driver;
-public ServicePage sp;	
+private WebDriver driver;
+private ServicePage sp;	
 	
 @BeforeTest 
 	public void initalize() throws IOException {
@@ -24,7 +24,7 @@ public ServicePage sp;
 	@Test
 	public void Entrar() throws IOException, InterruptedException {
 		signInPage sg = new signInPage(driver);
-		ServicePage sp = sg.LoginServicePage();
+		sp = sg.LoginServicePage();
 		sp.navegaVentanas(1);
 		sp.navegaVentanas(2);
 		sp.nuevoYcierro();
