@@ -27,13 +27,13 @@ public class PuntoTresTest extends Base {
 		signInPage sg = new signInPage(driver);
 		ServicePage sp = sg.LoginServicePage();
 		NuevoContaco nc = sp.LoginNuevoContacto(); 
-		nc.getURLnewWindow();
-		nc.creandoCuenta(prop.getProperty("name"), prop.getProperty("surname"));
+		nc.getURLnewWindow(); 
+		nc.creandoCuenta(prop.getProperty("name"), prop.getProperty("surname")); //creo un nuevo contacto para una cuenta
 		nc.defaultWindow();
 		nc.navegaVentanas(2);
-		nc.modificarBien(campo, valor, campo1, valor1);
+		nc.modificarBien(campo, valor, campo1, valor1); //modifico valores de un contacto
 		nc.confirmModificarBien();
-		nc.modificarMal(prop.getProperty("number"));
+		nc.modificarMal(prop.getProperty("number")); //modifico el número de empleados 
 		nc.confirmModificarMal();
 		
 	}

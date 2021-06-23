@@ -23,6 +23,7 @@ private ServicePage sp;
 	
 	@Test
 	public void Entrar() throws IOException, InterruptedException {
+		//navego por las ventanas de servicio
 		signInPage sg = new signInPage(driver);
 		sp = sg.LoginServicePage();
 		sp.navegaVentanas(1);

@@ -42,8 +42,8 @@ public class PuntoDosTest extends Base {
 		ServicePage sp = sg.LoginServicePage();
 		sp.navegaVentanas(2);
 		NuevoCuentas c = new NuevoCuentas (driver);
-		c.nuevoCuentas().click();
-		c.creandoFlasaCuenta();
+		c.nuevoCuentas().click(); //creo las dos cuentas con sus datos
+		c.creandoFlasaCuenta(); //creo la cuenta sin completar los campos
 	}
 		
 		
